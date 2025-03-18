@@ -1,0 +1,185 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.getElementById('btn').addEventListener('click', save);
+
+function save(event) {
+    event.preventDefault(); // หยุดการทำงานปกติของฟอร์ม
+
+    // แสดง SweetAlert เป็น Loading GIF
+    Swal.fire({
+        title: "กำลังบันทึกข้อมูล...",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+
+    var user = {};
+    user.data1 = document.getElementById('id2').value;
+    user.data2 = document.getElementById('date').value;
+    user.data3 = document.getElementById('activity').value;
+    user.data4 = document.getElementById('other').value;
+    user.data5 = document.getElementById('wt').value;
+
+    var imageFile = document.getElementById('imageUpload2').files[0];
+
+    if (imageFile) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            if (e.target.result) {
+                user.data6 = e.target.result;
+
+                google.script.run
+                    .withFailureHandler(function (error) {
+                        Swal.close(); // ปิด Loading ถ้ามีข้อผิดพลาด
+                        Swal.fire({
+                            title: "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+                            icon: "error",
+                            timer: 3000
+                        });
+                    })
+                    .withSuccessHandler(function () {
+                        resetForm();
+                        Swal.close(); // ปิด Loading
+                        Swal.fire({
+                            title: "บันทึกข้อมูลเรียบร้อยแล้ว",
+                            icon: "success",
+                            timer: 3000
+                        });
+                    })
+                    .saveActivity(user);
+            } else {
+                Swal.close();
+                Swal.fire({
+                    title: "ไม่สามารถแปลงไฟล์รูปได้",
+                    icon: "error",
+                    timer: 3000
+                });
+            }
+        };
+        reader.readAsDataURL(imageFile);
+    } else {
+        user.data6 = '';
+        google.script.run
+            .withFailureHandler(function (error) {
+                Swal.close();
+                Swal.fire({
+                    title: "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+                    icon: "error",
+                    timer: 3000
+                });
+            })
+            .withSuccessHandler(function () {
+                resetForm();
+                Swal.close();
+                Swal.fire({
+                    title: "บันทึกข้อมูลเรียบร้อยแล้ว",
+                    icon: "success",
+                    timer: 3000
+                });
+            })
+            .saveActivity(user);
+    }
+}
+
+function resetForm() {
+    document.getElementById('id2').value = "";
+    document.getElementById('date').value = "";
+    document.getElementById('activity').value = "";
+    document.getElementById('other').value = "";
+    document.getElementById('wt').value = "";
+    document.getElementById('imageUpload2').value = "";
+}
+</script>
+
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.sidenav');
+      var instances = M.Sidenav.init(elems);
+    });
+  </script>
+
+
+
+ <script>
+        function toggleOtherInput() {
+            var activitySelect = document.getElementById("activity"); // Get the select element
+            var otherInput = document.getElementById("otherRow"); // Get the row with "อื่นๆ" input
+            if (activitySelect.value === "อื่น ๆ") {
+                otherInput.style.display = "block"; // Show the input field when "อื่น ๆ" is selected
+            } else {
+                otherInput.style.display = "none"; // Hide the input field for other options
+            }
+        }
+    </script>
+
+<script>
+
+ document.getElementById('id2').addEventListener('input', function() {
+    const id2 = document.getElementById('id2').value.trim();  // รหัสพนักงานที่กรอก
+
+    if (id2) {
+        // เมื่อกรอกรหัสแล้วให้แสดงข้อมูล
+        document.getElementById('employeeInfo').style.display = 'block';
+
+        // เรียกใช้งาน Google Apps Script เพื่อดึงข้อมูลพนักงาน
+        google.script.run.withSuccessHandler(function(employeeData) {
+            // แสดงข้อมูลพนักงาน
+            if (employeeData) {
+                document.getElementById('name').textContent = employeeData.name;
+                document.getElementById('department').textContent = employeeData.department;
+                document.getElementById('line').textContent = employeeData.line;
+                document.getElementById('gender').textContent = employeeData.gender;
+
+                // แสดงรูปภาพจาก Google Drive (จากคอลัมน์ที่ 6)
+                var imageUrl = employeeData.fileUrl ? "https://drive.google.com/thumbnail?id=" + extractFileId(employeeData.fileUrl) + "&sz=w1000" : ""; // ถ้าไม่มีลิงก์รูป ให้ใช้เป็นค่าว่าง
+                document.getElementById('employeeImage').src = imageUrl; // แสดงรูปภาพ
+            }
+        }).getEmployeeData(id2);  // เรียกฟังก์ชันใน Google Apps Script
+    } else {
+        // ถ้ากรอกรหัสพนักงานเป็นค่าว่างให้ซ่อนข้อมูล
+        document.getElementById('employeeInfo').style.display = 'none';
+    }
+});
+
+// ฟังก์ชันที่แยก File ID จาก URL
+function extractFileId(url) {
+    var match = url.match(/\/d\/(.*)\/view/); // หารูปแบบ /d/FILE_ID/view
+    return match ? match[1] : ""; // ถ้าเจอให้ส่ง File ID, ถ้าไม่เจอให้คืนค่าว่าง
+}
+
+</script>
+
+  <script>
+  // ป้องกันการคลิกโลโก้
+  document.getElementById("logo").addEventListener("click", function(event) {
+    event.preventDefault(); // ไม่ให้ทำงานเมื่อคลิก
+  });
+</script>
+<script>
+document.getElementById('id2').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' || event.keyCode === 13) { 
+        event.preventDefault(); // ป้องกันการทำงานของ Enter
+        return false;
+    }
+});
+
+document.getElementById('id2').addEventListener('beforeinput', function(event) {
+    if (event.inputType === 'insertLineBreak') { 
+        event.preventDefault();
+        return false;
+    }
+});
+
+document.getElementById('id2').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter' || event.keyCode === 13) { 
+        event.preventDefault();
+        return false;
+    }
+});
+
+</script>
+
