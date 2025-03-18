@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>ชมรมรักสุขภาพ</title>
+    <!-- Import Materialize CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kanit">
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <link rel="stylesheet" href="./materialize/css/materialize.min.css">
+      <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+body {
+  font-family: "Kanit", sans-serif;
+}
+form-r{
+  margin-botton:20px;
+}
+</style>
+<style>
+        body {
+            font-family: "Kanit", sans-serif;
+        }
+        .form-r { /* ต้องใช้ .form-r แทน form-r */
+            margin-bottom: 16px;
+        }
+        select {
+            font-family: "Kanit", sans-serif;
+            font-size: 16px;
+            padding: 5px;
+        }
+    </style>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เลือกรูปภาพ</title>
+    <style>
+        .preview {
+            margin-top: 10px;
+            max-width: 300px;
+            display: none;
+        }
+    </style>
+  <style>
+  nav .brand-logo {
+    font-size: 25px !important;
+  }
+
+  @media (max-width: 600px) {
+    nav .brand-logo {
+      font-size: 16px !important; /* ขนาดฟอนต์ที่เล็กลง */
+    }
+  }
+   #id2 {
+            font-family: "Kanit", sans-serif;
+            font-size: 18px;
+          
+            margin-top: 10px;
+        }
+         #date {
+            font-family: "Kanit", sans-serif;
+            font-size: 18px;
+            
+            margin-top: 10px;
+        }
+</style>
+<style>
+    .loading {
+        display: none;
+        margin-top: 20px;
+    }
+    .loading img {
+        width: 50px;
+        height: 50px;
+    }
+</style>
+<style>
+      img {
+        width: 200px;
+        height: auto;
+      }
+    </style>
+  </head>
+
+
+  <body>
+    <div class="container">  
+ 
+	<nav>
+    <?var url = getUrl();?>
+    <div class="nav-wrapper blue">
+        <a href="#!" class="brand-logo" id="logo">บันทึกการออกกำลังกาย</a> <!-- แก้ไข href ให้ไม่ทำอะไรเมื่อคลิก -->
+        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="<?=url?>?page=main" style="font-size: 20px;">1.หน้าแรก</a></li>
+            <li><a href="<?=url?>?page=page2" style="font-size: 20px;">2.บันทึกการออกกำลังกาย</a></li>
+      <li><a href="<?=url?>?page=report" style="font-size: 20px;">3.ตารางข้อมูลออกกำลังกาย</a></li>
+      <li><a href="<?=url?>?page=monthrp" style="font-size: 20px;">4.ตารางข้อมูลแบบเดือน</a></li>
+      <li><a href="<?=url?>?page=index" style="font-size: 20px;">5.สมัครสมาชิก</a></li>
+        </ul>
+    </div>
+</nav>
+
+<ul class="sidenav" id="mobile-demo">
+  <li><a href="<?=url?>?page=main" style="font-size: 20px;">1.หน้าแรก</a></li>
+            <li><a href="<?=url?>?page=page2" style="font-size: 20px;">2.บันทึกการออกกำลังกาย</a></li>
+      <li><a href="<?=url?>?page=report" style="font-size: 20px;">3.ตารางข้อมูลออกกำลังกาย</a></li>
+      <li><a href="<?=url?>?page=monthrp" style="font-size: 20px;">4.ตารางข้อมูลแบบเดือน</a></li>
+      <li><a href="<?=url?>?page=index" style="font-size: 20px;">5.สมัครสมาชิก</a></li>
+</ul>
+     
+  <form id="uploadForm" action="https://script.google.com/macros/s/1-CxeFEDvsPOdJm-RARN1X5yt6sq8duQW2eg_EM1r9pEdkIsfZ3-wPSGH/exec" method="POST" enctype="multipart/form-data">
+  <form id="exerciseForm">
+    <label for="id2"style="font-size: 25px;">กรอกรหัสพนักงาน:</label>
+    <input type="text" id="id2" placeholder="" name="id2" required>
+  </form>
+
+
+
+<div id="employeeInfo" style="font-size: 20px; display: none;">
+  
+  <h5>ข้อมูลพนักงาน:</h5>
+    <p>ชื่อ: <span id="name"></span></p>
+    <p>แผนก: <span id="department"></span></p>
+    <p>สาย: <span id="line"></span></p>
+    <p>เพศ: <span id="gender"></span></p>
+    <img id="employeeImage" width="200">
+</div>
+
+
+    <div class="row">
+        <label style="font-size: 25px;">วันที่: </label><input type="date" id="date" name="date">
+    </div>
+    <div>
+      <div class="row">
+        <label for="activity" style="font-size: 25px;">กิจกรรมทางกาย: </label>
+        <select id="activity" name="activity" class="browser-default" onchange="toggleOtherInput()" style="font-size: 20px;">
+            <option value="เล่นกีฬาสากล (ฟุตบอล,ตะกร้อ,เเบตมินตัน และอื่นๆ)" style="font-size: 20px;">เล่นกีฬาสากล (ฟุตบอล,ตะกร้อ,เเบตมินตัน และอื่นๆ)</option>
+            <option value="การวิ่ง"selected style="font-size: 20px;">การวิ่ง</option>
+            <option value="แอโรบิค" style="font-size: 20px;">แอโรบิค</option>
+            <option value="อื่น ๆ" style="font-size: 20px;">อื่น ๆ</option>
+        </select>
+    </div>
+
+
+<div class="row" id="otherRow" style="display:none;">
+        <label for="other" style="font-size: 25px;">อื่นๆ: </label>
+        <input type="text" id="other" name="other">
+    </div>
+
+
+
+
+    <div class="row">
+        <label style="font-size: 25px;">ระยะเวลา: </label>
+        <select id="wt" name="wt" class="browser-default" style="font-size: 20px;">
+            <option selected disabled value="" style="font-size: 20px;">ระยะเวลา</option>
+            <option value="16-30 นาที" style="font-size: 20px;">16-30 นาที</option>
+            <option value="31-45 นาที" style="font-size: 20px;">31-45 นาที</option>
+            <option value="มากกว่า 45 นาที" style="font-size: 20px;">มากกว่า 45 นาที</option>
+        </select>
+    </div>
+    <div class="row">
+        <label style="font-size: 25px;">อัปโหลดรูปภาพ: </label>
+        <input type="file" id="imageUpload2" name="image" accept="image/*">
+    </div>
+        <button class="btn waves-effect waves-light blue" type="submit" id="btn">Submit
+    <i class="material-icons right">send</i>
+  </button>
+  <p>
+    </div>
+    
+  </body>
+  <?!=include('js2');?>
+</html>
+
